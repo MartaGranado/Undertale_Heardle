@@ -101,10 +101,7 @@ const songs = [
     "toby fox - UNDERTALE Soundtrack - 100 MEGALOVANIA.mp3",
     "toby fox - UNDERTALE Soundtrack - 101 Good Night.mp3"
 ];
-
-const audio = document.getElementById("audio");
 const playBtn = document.getElementById("play-btn");
-const replayBtn = document.getElementById("replay-btn");
 const skipBtn = document.getElementById("skip-btn");
 const guessForm = document.getElementById("guess-form");
 const guessInput = document.getElementById("guess-input");
@@ -118,6 +115,7 @@ let currentSeconds = 1;
 let attempts = 0;
 let maxAttempts = 5;
 let revealed = false;
+let isPlaying = false;
 
 function extractSongName(filename) {
   const parts = filename.split(" - ");
@@ -125,8 +123,9 @@ function extractSongName(filename) {
   return lastPart.replace(/^\d+\s*/, "").replace(/\.mp3$/, "");
 }
 
-const autocompleteList = document.getElementById("autocomplete-list");
+const guessedSongs = new Set();
 
+const autocompleteList = document.getElementById("autocomplete-list");
 function loadOptions() {
   guessInput.addEventListener("input", () => {
     const value = guessInput.value.toLowerCase();
@@ -176,25 +175,28 @@ function loadOptions() {
   });
 }
 
-function playClip(seconds) {
-  audio.src = `songs/${currentSong}`;
-  audio.currentTime = 0;
-  audio.play();
-
-  setTimeout(() => {
-    audio.pause();
-  }, seconds * 1000);
-}
-
+// Toggle play/stop full song
 playBtn.addEventListener("click", () => {
-  if (!revealed) playClip(currentSeconds);
+  if (!audio.src || audio.src.indexOf(currentSong) === -1) {
+    audio.src = `songs/${currentSong}`;
+  }
+
+  if (!isPlaying) {
+    audio.play();
+    isPlaying = true;
+    playBtn.textContent = "⏹ Stop";
+  } else {
+    audio.pause();
+    audio.currentTime = 0;
+    isPlaying = false;
+    playBtn.textContent = "▶️ Play";
+  }
 });
 
-replayBtn.addEventListener("click", () => {
-  if (!revealed) playClip(currentSeconds);
+audio.addEventListener("ended", () => {
+  isPlaying = false;
+  playBtn.textContent = "▶️ Play";
 });
-
-const guessedSongs = new Set();
 
 guessForm.addEventListener("submit", e => {
   e.preventDefault();
@@ -215,8 +217,11 @@ guessForm.addEventListener("submit", e => {
     guessItem.className = "correct";
     guessesDiv.appendChild(guessItem);
     resultDiv.innerHTML = `✅ Correct! The song was <strong>${songName}</strong>. Playing full song...`;
+    document.getElementById("next-btn").style.display = "inline-block";
     audio.src = `songs/${currentSong}`;
     audio.play();
+    isPlaying = true;
+    playBtn.textContent = "⏹ Stop";
     revealed = true;
   } else {
     guessItem.className = "incorrect";
@@ -226,8 +231,11 @@ guessForm.addEventListener("submit", e => {
     currentSeconds++;
     if (attempts >= maxAttempts) {
       resultDiv.innerHTML = `❌ Out of tries! The song was <strong>${songName}</strong>.`;
+      document.getElementById("next-btn").style.display = "inline-block";
       audio.src = `songs/${currentSong}`;
       audio.play();
+      isPlaying = true;
+      playBtn.textContent = "⏹ Stop";
       revealed = true;
     }
   }
@@ -235,7 +243,6 @@ guessForm.addEventListener("submit", e => {
   guessInput.value = "";
   autocompleteList.innerHTML = "";
 });
-
 
 skipBtn.addEventListener("click", () => {
   if (revealed) return;
@@ -246,14 +253,40 @@ skipBtn.addEventListener("click", () => {
   guessesDiv.appendChild(skipNote);
   if (attempts >= maxAttempts) {
     resultDiv.innerHTML = `❌ Out of tries! The song was <strong>${songName}</strong>.`;
+    document.getElementById("next-btn").style.display = "inline-block";
     audio.src = `songs/${currentSong}`;
     audio.play();
+    isPlaying = true;
+    playBtn.textContent = "⏹ Stop";
     revealed = true;
   }
 });
 
+const nextBtn = document.getElementById("next-btn");
+
+nextBtn.addEventListener("click", () => {
+  // Reset state
+  currentSong = songs[Math.floor(Math.random() * songs.length)];
+  songName = extractSongName(currentSong);
+  currentSeconds = 1;
+  attempts = 0;
+  revealed = false;
+  isPlaying = false;
+  guessedSongs.clear();
+
+  // Reset UI
+  audio.pause();
+  audio.currentTime = 0;
+  audio.src = "";
+  playBtn.textContent = "▶️ Play";
+  guessInput.value = "";
+  guessesDiv.innerHTML = "";
+  resultDiv.innerHTML = "";
+  autocompleteList.innerHTML = "";
+  nextBtn.style.display = "none";
+});
+
+
 document.addEventListener("DOMContentLoaded", function () {
   loadOptions();
 });
-
-// loadOptions();
