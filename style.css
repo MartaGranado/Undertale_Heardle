@@ -1,0 +1,59 @@
+/* Essential autocomplete styles */
+    .autocomplete-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .autocomplete-items {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .autocomplete-items div {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .autocomplete-items div:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Basic styling (optional) */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+      font-family: sans-serif;
+    }
+
+    #guess-input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      font-size: 1rem;
+    }
+
+    #guesses div.correct {
+      color: green;
+    }
+
+    #guesses div.incorrect {
+      color: red;
+    }
+
+    #result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Undertale Heardle</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Undertale Heardle</h1>
+
+    <audio id="audio" preload="auto"></audio>
+    <button id="play-btn">▶️ Play</button>
+    <button id="replay-btn">🔁 Replay</button>
+
+    <form id="guess-form" autocomplete="off">
+      <div class="autocomplete-container">
+        <input
+          type="text"
+          id="guess-input"
+          placeholder="Type or choose a song..."
+          required
+        />
+        <div id="autocomplete-list" class="autocomplete-items"></div>
+      </div>
+      <button type="submit">Guess</button>
+    </form>
+
+    <button id="skip-btn">⏩ Skip</button>
+
+    <div id="guesses"></div>
+    <div id="result"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
