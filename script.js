@@ -217,6 +217,7 @@ guessForm.addEventListener("submit", e => {
     guessItem.className = "correct";
     guessesDiv.appendChild(guessItem);
     resultDiv.innerHTML = `✅ Correct! The song was <strong>${songName}</strong>. Playing full song...`;
+    resultDiv.style.color = "white"; 
     document.getElementById("next-btn").style.display = "inline-block";
     audio.src = `songs/${currentSong}`;
     audio.play();
@@ -231,6 +232,7 @@ guessForm.addEventListener("submit", e => {
     currentSeconds++;
     if (attempts >= maxAttempts) {
       resultDiv.innerHTML = `❌ Out of tries! The song was <strong>${songName}</strong>.`;
+      resultDiv.style.color = "white"; 
       document.getElementById("next-btn").style.display = "inline-block";
       audio.src = `songs/${currentSong}`;
       audio.play();
@@ -250,9 +252,11 @@ skipBtn.addEventListener("click", () => {
   currentSeconds++;
   const skipNote = document.createElement("div");
   skipNote.textContent = "⏩ Skipped";
+  skipNote.style.color = "white";  
   guessesDiv.appendChild(skipNote);
   if (attempts >= maxAttempts) {
     resultDiv.innerHTML = `❌ Out of tries! The song was <strong>${songName}</strong>.`;
+    resultDiv.style.color = "white";  
     document.getElementById("next-btn").style.display = "inline-block";
     audio.src = `songs/${currentSong}`;
     audio.play();
